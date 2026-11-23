@@ -7,7 +7,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths: [".claude-plugin/plugin.json", "CHANGELOG.md"]
+    paths: [".claude-plugin/plugin.json", "CHANGELOG.md", ".github/workflows/release.yml"]
     tags: ["v*"]
   workflow_dispatch:
 

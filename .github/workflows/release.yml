@@ -1,8 +1,15 @@
 name: Release
 
+# Publishes a GitHub release with the claude.ai skill ZIPs whenever the version in
+# .claude-plugin/plugin.json has no matching v<version> release yet. Bumping the
+# version on main is the whole release process. Pushing a v* tag also works.
+
 on:
   push:
+    branches: [main]
+    paths: [".claude-plugin/plugin.json", "CHANGELOG.md"]
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,17 +21,51 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: python tools/sync_shared.py --check
-      - run: python tools/validate_skills.py
-      - run: python -m unittest discover -s tests
-      - run: python tools/build_zips.py
-      - name: Publish release
+          python-version: "3.13"
+      - name: Read version
+        id: v
+        run: echo "tag=v$(python -c "import json;print(json.load(open('.claude-plugin/plugin.json'))['version'])")" >> "$GITHUB_OUTPUT"
+      - name: Check for existing release
+        id: exists
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" dist/*.zip --clobber
+          if gh release view "${{ steps.v.outputs.tag }}" >/dev/null 2>&1; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
           else
-            gh release create "$GITHUB_REF_NAME" dist/*.zip --title "Omni $GITHUB_REF_NAME" --generate-notes
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Validate
+        run: |
+          python tools/sync_shared.py --check
+          python tools/validate_skills.py
+          python -m unittest discover -s tests
+      - name: Build ZIPs
+        run: python tools/build_zips.py
+      - name: Release notes from CHANGELOG
+        run: |
+          python - <<'PY'
+          import re, json
+          version = json.load(open(".claude-plugin/plugin.json"))["version"]
+          text = open("CHANGELOG.md").read()
+          m = re.search(rf"## \[{re.escape(version)}\][^\n]*\n(.*?)(?=\n## \[|\n\[|\Z)", text, re.S)
+          body = (m.group(1).strip() if m else "See CHANGELOG.md.")
+          install = (
+              "### Install\n"
+              "- **Claude Code:** `/plugin marketplace add borderlessismore/omni-skill`, then `/plugin install omni@omni-skill`\n"
+              "- **claude.ai / desktop:** download the ZIPs below and upload each under Settings → Capabilities → Skills.\n\n"
+          )
+          open("notes.md", "w").write(
+              "**One question, every source.** Omni by [Bo Balachsan](https://beborderless.io/).\n\n"
+              + install + body + "\n")
+          PY
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.v.outputs.tag }}
+        run: |
+          if [ "${{ steps.exists.outputs.found }}" = "true" ]; then
+            gh release upload "$TAG" dist/*.zip --clobber
+          else
+            gh release create "$TAG" dist/*.zip --target "$GITHUB_SHA" --title "Omni $TAG" --notes-file notes.md
           fi

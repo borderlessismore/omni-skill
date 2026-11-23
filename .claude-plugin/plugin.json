@@ -1,0 +1,13 @@
+{
+  "name": "omni",
+  "version": "1.0.0",
+  "description": "One question, every source. Search Notion, Google Drive, Slack, local folders, past chats and captured claude.ai Projects through one shared index, with onboarding and capture skills.",
+  "author": {
+    "name": "Bo Balachsan",
+    "url": "https://beborderless.io/"
+  },
+  "homepage": "https://github.com/borderlessismore/omni-skill",
+  "repository": "https://github.com/borderlessismore/omni-skill",
+  "license": "MIT",
+  "keywords": ["search", "knowledge-management", "index", "cross-project", "notion", "google-drive", "second-brain", "retrieval"]
+}

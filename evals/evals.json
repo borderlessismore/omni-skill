@@ -1,0 +1,89 @@
+[
+  {
+    "id": "omni-brief-across-sources",
+    "skills": ["omni"],
+    "query": "What have we decided about membership pricing, across everything?",
+    "files": ["examples/omni-index.md", "examples/omni-config.md"],
+    "expected_behavior": [
+      "Locates the index and config before searching",
+      "Expands the query with the vocabulary (pricing = tiers, plans)",
+      "Leads with the current decision: two tiers at EUR 29 and EUR 79",
+      "Shows the workshop notes as superseded history, not as the current answer",
+      "Labels the annual discount as an open proposal, not a decision",
+      "Lists the uncaptured Research Project or unconnected sources under Gaps",
+      "Links every finding to its location"
+    ]
+  },
+  {
+    "id": "omni-find-mode",
+    "skills": ["omni"],
+    "query": "Where did I write the onboarding plan?",
+    "files": ["examples/omni-index.md", "examples/omni-config.md"],
+    "expected_behavior": [
+      "Uses Find mode: a short ranked list of locations",
+      "Returns the Google Doc location for the member onboarding plan first",
+      "Does not write a long synthesis"
+    ]
+  },
+  {
+    "id": "omni-no-index",
+    "skills": ["omni"],
+    "query": "Search all my projects for anything about the podcast idea.",
+    "files": [],
+    "expected_behavior": [
+      "Checks context and connected stores for an Omni Config or Omni Index",
+      "Says in one sentence that no index exists yet",
+      "Offers or starts onboarding instead of pretending to search other Projects",
+      "If it runs a live search, labels the answer as unindexed"
+    ]
+  },
+  {
+    "id": "omni-cross-project-honesty",
+    "skills": ["omni"],
+    "query": "Check my Research project for competitor notes.",
+    "files": ["examples/omni-index.md", "examples/omni-config.md"],
+    "expected_behavior": [
+      "Returns the captured competitor scan entry from the index",
+      "States that it cannot open the Research Project directly and is relying on the captured entry",
+      "Marks the finding as (index only)"
+    ]
+  },
+  {
+    "id": "onboarding-defaults-unattended",
+    "skills": ["omni-onboarding"],
+    "query": "Set up Omni for me. Use whatever makes sense, I'm heading out.",
+    "files": [],
+    "expected_behavior": [
+      "Checks for an existing setup first and does not overwrite it",
+      "Inventories connectors actually available in the session",
+      "Picks the default store from what is connected and says which defaults it took",
+      "Creates both Omni Config and Omni Index and links them to each other",
+      "Validates the index after the first backfill",
+      "Gives the exact pointer line to pin and the capture prompt for other Projects"
+    ]
+  },
+  {
+    "id": "capture-conversation",
+    "skills": ["omni-capture"],
+    "query": "Capture this: we agreed to run three paid pilot sessions in March at EUR 150 each before building anything.",
+    "files": ["examples/omni-index.md", "examples/omni-config.md"],
+    "expected_behavior": [
+      "Drafts one decision entry whose summary contains the number of sessions, the month and the price",
+      "Uses existing or vocabulary topics rather than inventing near-synonyms",
+      "Checks for duplicates before writing",
+      "Asks for confirmation before writing (the user is present)",
+      "Validates after writing and appends a capture-log line"
+    ]
+  },
+  {
+    "id": "capture-skips-sensitive",
+    "skills": ["omni-capture"],
+    "query": "Capture this project. One doc mentions a team member's medical leave reason.",
+    "files": [],
+    "expected_behavior": [
+      "Captures the project's work content",
+      "Leaves the medical detail out of every summary",
+      "Mentions in one line what was skipped"
+    ]
+  }
+]

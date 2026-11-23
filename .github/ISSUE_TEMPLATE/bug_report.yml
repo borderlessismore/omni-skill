@@ -1,0 +1,40 @@
+name: Omni got it wrong
+description: Omni missed a source, gave a wrong answer, or a skill misbehaved
+labels: [bug]
+body:
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill
+      options: [omni, omni-onboarding, omni-capture, omni_index.py script]
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where were you using it?
+      options: [claude.ai web, Claude desktop app, Claude mobile app, Claude Code, Other]
+  - type: textarea
+    id: asked
+    attributes:
+      label: What you asked
+      description: The exact prompt, with private details removed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: input
+    id: store
+    attributes:
+      label: Index store and connected sources
+      placeholder: e.g. Notion index; Notion, Drive and Slack connected

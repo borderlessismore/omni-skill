@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Omni index tool: create, validate, search, add to and summarise a Markdown Omni Index.
 
-Standard library only (Python 3.8+). The format is defined in references/index-schema.md.
+Standard library only (Python 3.9+). The format is defined in references/index-schema.md.
 
 Usage:
   omni_index.py init     INDEX [--owner NAME]

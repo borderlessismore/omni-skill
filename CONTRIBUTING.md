@@ -6,7 +6,7 @@ Thanks for helping. Omni is small on purpose: three focused skills, one index fo
 
 - **Report a miss.** Omni answered wrongly, missed a source or invented a location. Open an issue with the question you asked, what you expected and what it did.
 - **Add a source adapter.** New tactics for a connector go in `skills/omni/references/retrieval-playbook.md`.
-- **Improve the script.** `shared/omni_index.py` must stay standard-library only and Python 3.9+ compatible.
+- **Improve the script.** `shared/omni_index.py` must stay standard-library only and Python 3.10+ compatible.
 
 ## Rules for skill changes
 
